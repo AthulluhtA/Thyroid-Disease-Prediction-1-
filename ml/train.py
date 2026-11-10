@@ -20,8 +20,18 @@ X_train, y_train = train.drop(columns="target"), train["target"]
 X_test,  y_test  = test.drop(columns="target"),  test["target"]
 
 # Decision Tree 
-model = DecisionTreeClassifier(class_weight="balanced", random_state=42)
-model.fit(X_train, y_train)
+from imblearn.over_sampling import SMOTENC
+
+CONT = ["age", "TSH", "T3", "TT4", "T4U", "FTI"]
+binary_idx = [i for i, c in enumerate(X_train.columns) if c not in CONT]
+
+# SMOTE on the TRAINING set only; the test set stays untouched
+smote = SMOTENC(categorical_features=binary_idx, random_state=42)
+X_res, y_res = smote.fit_resample(X_train, y_train)
+print("After SMOTE:", y_res.value_counts().to_dict())
+
+model = DecisionTreeClassifier(max_depth=8, min_samples_leaf=3, random_state=42)
+model.fit(X_res, y_res)
 pred = model.predict(X_test)
 
 acc = accuracy_score(y_test, pred)
@@ -57,3 +67,22 @@ plt.figure(figsize=(9, 7))
 sns.heatmap(train.corr(), cmap="coolwarm", center=0)
 plt.title("Correlation heatmap")
 plt.savefig(f"{out}/static/img/corr.png", bbox_inches="tight"); plt.close()
+
+fig, ax = plt.subplots(1, 2, figsize=(9, 3.5))
+sns.countplot(x=y_train, ax=ax[0]); ax[0].set_title("Before SMOTE")
+sns.countplot(x=y_res, ax=ax[1]); ax[1].set_title("After SMOTE")
+plt.savefig(f"{out}/static/img/smote.png", bbox_inches="tight"); plt.close()
+
+import numpy as np
+
+classes = ["1", "2", "3"]
+prec = [report[c]["precision"] for c in classes]
+rec  = [report[c]["recall"] for c in classes]
+x = np.arange(len(classes))
+
+plt.bar(x - 0.2, prec, 0.4, label="Precision")
+plt.bar(x + 0.2, rec, 0.4, label="Recall")
+plt.xticks(x, [f"Class {c}" for c in classes])
+plt.ylim(0, 1.05)
+plt.legend(); plt.title("Precision & Recall per class")
+plt.savefig(f"{out}/static/img/prec_recall.png", bbox_inches="tight"); plt.close()

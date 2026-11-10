@@ -1,0 +1,41 @@
+{% extends "predictor/base.html" %}
+{% load static %}
+{% block content %}
+<h1>Thyroid Disease Classification - Decision Tree</h1>
+
+<h2>EDA Visualizations</h2>
+<div class="grid">
+  <div><img src="{% static 'predictor/img/class_dist.png' %}" alt="Class distribution"></div>
+  <div><img src="{% static 'predictor/img/corr.png' %}" alt="Correlation heatmap"></div>
+  <div><img src="{% static 'predictor/img/box_TSH.png' %}" alt="TSH by class"></div>
+  <div><img src="{% static 'predictor/img/box_FTI.png' %}" alt="FTI by class"></div>
+</div>
+
+<h3>Class balance: before and after SMOTE</h3>
+<img src="{% static 'predictor/img/smote.png' %}" alt="Before and after SMOTE">
+<p><small>SMOTENC was applied to the training set only. The test set keeps its original imbalanced distribution.</small></p>
+
+<h2>Classification Report</h2>
+<p>Test accuracy: <b>{{ accuracy }}%</b></p>
+<table>
+  <tr><th>Class</th><th>Precision</th><th>Recall</th><th>F1-score</th><th>Support</th></tr>
+  {% for row in rows %}
+  <tr>
+    <td>{{ row.label }}</td>
+    <td>{{ row.precision|floatformat:2 }}</td>
+    <td>{{ row.recall|floatformat:2 }}</td>
+    <td>{{ row.f1|floatformat:2 }}</td>
+    <td>{{ row.support }}</td>
+  </tr>
+  {% endfor %}
+</table>
+<p><small>The majority-class baseline is 92.7% accuracy. Recall on abnormal classes matters most for medical screening.</small></p>
+
+<h3>Precision &amp; Recall per class</h3>
+<img src="{% static 'predictor/img/prec_recall.png' %}" alt="Precision and recall" style="max-width:500px">
+
+<h2>Confusion Matrix</h2>
+<img src="{% static 'predictor/img/confusion_matrix.png' %}" alt="Confusion matrix" style="max-width:500px">
+
+<p><small>Class labels are inferred from feature patterns: Class 3 is normal; Classes 1 and 2 show low-thyroid-function patterns of different severity.</small></p>
+{% endblock %}

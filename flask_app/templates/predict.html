@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block content %}
 <h1>Predict Thyroid Condition</h1>
-<p><small>Numeric values must be on the dataset's <b>0-1 scale</b> (the UCI data is pre-normalized). To test, copy values from a row of <code>ann-test.data</code>.</small></p>
+<p><small>Enter age in years. Enter the other numeric values on the dataset's <b>0-1 scale</b> (the UCI data is pre-normalized).</small></p>
 
 {% if error %}<div class="error">{{ error }}</div>{% endif %}
 {% for w in warnings %}<div class="error">Warning: {{ w }}</div>{% endfor %}
@@ -14,14 +14,17 @@
 
 <form method="post">
   <h3>Lab values</h3>
-  </label>
-  {% else %}
-  <label>{{ f }}:
-    <input type="number" step="any" min="0" max="1" name="{{ f }}" value="{{ values.get(f, '') }}" required>
-  </label>
-  {% endif %}
-</div>
-{% endfor %}
+  <div class="grid">
+    {% for f in continuous %}
+    <label>{{ f }}:
+      {% if f == "age" %}
+      <input type="number" step="1" min="0" max="120" name="{{ f }}" value="{{ (values.get(f) * 100) | round(2) if values.get(f) is not none else '' }}" required>
+      {% else %}
+      <input type="number" step="any" min="0" max="1" name="{{ f }}" value="{{ values.get(f, '') }}" required>
+      {% endif %}
+    </label>
+    {% endfor %}
+  </div>
 
   <h3>Patient history (tick if yes)</h3>
   <div class="grid">

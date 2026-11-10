@@ -3,3 +3,5 @@ __pycache__/
 .ipynb_checkpoints/
 .env
 venv/
+django_app/db.sqlite3
+django_app/staticfiles/
