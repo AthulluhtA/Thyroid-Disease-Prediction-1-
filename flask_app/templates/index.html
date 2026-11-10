@@ -10,6 +10,10 @@
   <div><img src="{{ url_for('static', filename='img/box_FTI.png') }}" alt="FTI by class"></div>
 </div>
 
+<h3>Class balance: before and after SMOTE</h3>
+<img src="{{ url_for('static', filename='img/smote.png') }}" alt="Before and after SMOTE" style="max-width:700px">
+<p><small>SMOTENC was applied to the training set only. The test set keeps its original (imbalanced) distribution.</small></p>
+
 <h2>Classification Report</h2>
 <p>Test accuracy: <b>{{ accuracy }}%</b></p>
 <table>
