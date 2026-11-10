@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Thyroid Disease Classification - Decision Tree</h1>
+
+<h2>EDA Visualizations</h2>
+<div class="grid">
+  <div><img src="{{ url_for('static', filename='img/class_dist.png') }}" alt="Class distribution"></div>
+  <div><img src="{{ url_for('static', filename='img/corr.png') }}" alt="Correlation heatmap"></div>
+  <div><img src="{{ url_for('static', filename='img/box_TSH.png') }}" alt="TSH by class"></div>
+  <div><img src="{{ url_for('static', filename='img/box_FTI.png') }}" alt="FTI by class"></div>
+</div>
+
+<h2>Classification Report</h2>
+<p>Test accuracy: <b>{{ accuracy }}%</b></p>
+<table>
+  <tr><th>Class</th><th>Precision</th><th>Recall</th><th>F1-score</th><th>Support</th></tr>
+  {% for r in rows %}
+  <tr>
+    <td>{{ r.label }}</td>
+    <td>{{ "%.2f"|format(r.precision) }}</td>
+    <td>{{ "%.2f"|format(r.recall) }}</td>
+    <td>{{ "%.2f"|format(r['f1-score']) }}</td>
+    <td>{{ r.support|int }}</td>
+  </tr>
+  {% endfor %}
+  <tr><td><b>Macro avg</b></td>
+    <td>{{ "%.2f"|format(macro.precision) }}</td><td>{{ "%.2f"|format(macro.recall) }}</td>
+    <td>{{ "%.2f"|format(macro['f1-score']) }}</td><td>{{ macro.support|int }}</td></tr>
+  <tr><td><b>Weighted avg</b></td>
+    <td>{{ "%.2f"|format(weighted.precision) }}</td><td>{{ "%.2f"|format(weighted.recall) }}</td>
+    <td>{{ "%.2f"|format(weighted['f1-score']) }}</td><td>{{ weighted.support|int }}</td></tr>
+</table>
+
+<h2>Confusion Matrix</h2>
+<img src="{{ url_for('static', filename='img/confusion_matrix.png') }}" alt="Confusion matrix" style="max-width:500px">
+{% endblock %}
