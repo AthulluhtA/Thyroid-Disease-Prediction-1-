@@ -31,6 +31,11 @@
     <td>{{ "%.2f"|format(weighted['f1-score']) }}</td><td>{{ weighted.support|int }}</td></tr>
 </table>
 
+<h3>Precision &amp; Recall per class</h3>
+<img src="{{ url_for('static', filename='img/prec_recall.png') }}" alt="Precision and recall" style="max-width:500px">
+<p><small>Recall = share of true cases caught. Precision = share of flagged cases that are correct.
+For medical screening, recall on the abnormal classes is the key figure. Majority-class baseline accuracy is 92.7%.</small></p>
+
 <h2>Confusion Matrix</h2>
 <img src="{{ url_for('static', filename='img/confusion_matrix.png') }}" alt="Confusion matrix" style="max-width:500px">
 {% endblock %}
